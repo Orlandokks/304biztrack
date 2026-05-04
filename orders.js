@@ -373,37 +373,60 @@ function performSearch() {
 
 
 function exportToCSV() {
-    const ordersToExport = orders.map(order => {
-        return {
-            orderID: order.orderID,
-            orderDate: order.orderDate,
-            itemName: order.itemName,
-            itemPrice: order.itemPrice.toFixed(2),
-            qtyBought: order.qtyBought,
-            shipping: order.shipping.toFixed(2),
-            taxes: order.taxes.toFixed(2),
-            orderTotal: order.orderTotal.toFixed(2),
-            orderStatus: order.orderStatus,
-        };
-    });
-  
-    const csvContent = generateCSV(ordersToExport);
-  
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-  
-    const link = document.createElement('a');
-    link.href = window.URL.createObjectURL(blob);
-    link.download = 'biztrack_order_table.csv';
-  
-    document.body.appendChild(link);
-    link.click();
-  
-    document.body.removeChild(link);
-}
-  
-function generateCSV(data) {
-    const headers = Object.keys(data[0]).join(',');
-    const rows = data.map(order => Object.values(order).join(','));
+  /*
+   * CSV ROBUSTNESS FIX:
+   * The export schema is now explicit. This prevents crashes when the orders
+   * array is empty and keeps the exported column order stable over time.
+   */
+  const orderColumns = [
+    {
+      header: "Order ID",
+      value: (order) => order.orderID,
+    },
+    {
+      header: "Order Date",
+      value: (order) => order.orderDate,
+    },
+    {
+      header: "Item Name",
+      value: (order) => order.itemName,
+    },
+    {
+      header: "Item Price",
+      value: (order) => Number(order.itemPrice || 0).toFixed(2),
+    },
+    {
+      header: "Quantity Bought",
+      value: (order) => order.qtyBought,
+    },
+    {
+      header: "Shipping Fee",
+      value: (order) => Number(order.shipping || 0).toFixed(2),
+    },
+    {
+      header: "Taxes",
+      value: (order) => Number(order.taxes || 0).toFixed(2),
+    },
+    {
+      header: "Order Total",
+      value: (order) => Number(order.orderTotal || 0).toFixed(2),
+    },
+    {
+      header: "Order Status",
+      value: (order) => order.orderStatus,
+    },
+  ];
 
-    return `${headers}\n${rows.join('\n')}`;
+  /*
+   * SECURITY FIX:
+   * Order ID is a free-text field and therefore user-controlled. The shared
+   * CSV utility escapes every cell and prefixes formula-like values so that
+   * exported spreadsheet cells are treated as text rather than formulas.
+   */
+  BizTrackCSV.exportRecordsToCSV({
+    filename: "biztrack_order_table.csv",
+    records: orders,
+    columns: orderColumns,
+  });
 }
+

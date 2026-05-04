@@ -99,7 +99,13 @@
                 <h3 class="main-title">Orders</h3>
                 <div class="order-button">
                     <button class="add-button" onclick="openForm()">Add Order</button>
-                    <button class="download-button" onclick="exportToCSV()">Export to CSV</button>
+                    <button
+                        class="download-button"
+                        onclick="exportToCSV()"
+                        aria-label="Export orders as a CSV file"
+                    >
+                        Export to CSV
+                    </button>
                 </div>
             </div>
 
@@ -214,6 +220,7 @@
 
     <script src="./safe-dom.js"></script>
     <script src="./accessibility.js"></script>
+    <script src="./csv-utils.js"></script>
     <script src="./orders.js"></script>
 </body>
 </html>

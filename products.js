@@ -291,36 +291,55 @@ function performSearch() {
 
 
 function exportToCSV() {
-  const productsToExport = products.map(product => {
-      return {
-        prodID: product.prodID,
-        prodName: product.prodName,
-        prodDesc: product.prodDesc,
-        prodCategory: product.prodCat,
-        prodPrice: product.prodPrice.toFixed(2),
-        QtySold: product.prodSold,
-      };
+  /*
+   * CSV ROBUSTNESS FIX:
+   * The original export built a temporary array and passed it to a local
+   * generateCSV(data) function that inferred headers from data[0]. That caused
+   * an exception when there were no products to export.
+   *
+   * The revised implementation defines the export schema explicitly. This
+   * allows a valid header-only CSV to be exported even when the product list is
+   * empty, and it avoids relying on object property order.
+   */
+  const productColumns = [
+    {
+      header: "Product ID",
+      value: (product) => product.prodID,
+    },
+    {
+      header: "Product Name",
+      value: (product) => product.prodName,
+    },
+    {
+      header: "Description",
+      value: (product) => product.prodDesc,
+    },
+    {
+      header: "Category",
+      value: (product) => product.prodCat,
+    },
+    {
+      header: "Price",
+      value: (product) => Number(product.prodPrice || 0).toFixed(2),
+    },
+    {
+      header: "Units Sold",
+      value: (product) => product.prodSold,
+    },
+  ];
+
+  /*
+   * SECURITY FIX:
+   * BizTrackCSV.exportRecordsToCSV() applies CSV quoting and formula-injection
+   * hardening to every cell. This is important because product fields such as
+   * Product ID and Description are user-controlled.
+   */
+  BizTrackCSV.exportRecordsToCSV({
+    filename: "biztrack_product_table.csv",
+    records: products,
+    columns: productColumns,
   });
-
-  const csvContent = generateCSV(productsToExport);
-
-  const blob = new Blob([csvContent], { type: 'text/csv' });
-
-  const link = document.createElement('a');
-  link.href = window.URL.createObjectURL(blob);
-  link.download = 'biztrack_product_table.csv';
-
-  document.body.appendChild(link);
-  link.click();
-
-  document.body.removeChild(link);
 }
 
-function generateCSV(data) {
-  const headers = Object.keys(data[0]).join(',');
-  const rows = data.map(order => Object.values(order).join(','));
-
-  return `${headers}\n${rows.join('\n')}`;
-}
 
 init();

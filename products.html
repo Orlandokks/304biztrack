@@ -99,7 +99,13 @@
                 <h3 class="main-title">Products</h3>
                 <div class="product-button">
                     <button class="add-button" onclick="openForm()">Add Product</button>
-                    <button class="download-button" onclick="exportToCSV()">Download CSV</button>
+                    <button
+                        class="download-button"
+                        onclick="exportToCSV()"
+                        aria-label="Download products as a CSV file"
+                    >
+                        Download CSV
+                    </button>
                 </div>
             </div>
             <div class="form-popup">
@@ -220,6 +226,7 @@
 
     <script src="./safe-dom.js"></script>
     <script src="./accessibility.js"></script>
+    <script src="./csv-utils.js"></script>
     <script src="./products.js"></script>
 </body>
 </html>
