@@ -506,15 +506,36 @@ tfoot td {
     color: #63484460;
 }
 
-.edit-icon{
-    padding-right: 1rem;
-}
-.action i {
-    font-size: 1rem;
+/*
+ * Action icon buttons
+ *
+ * Security-related UI adjustment:
+ * Edit/Delete controls are now real <button> elements instead of clickable
+ * <i> icons generated through innerHTML. This preserves the original visual
+ * appearance while allowing JavaScript behavior to be attached safely through
+ * addEventListener().
+ */
+.icon-button {
+    background: transparent;
+    color: var(--black-color);
     cursor: pointer;
+    padding: 0.25rem;
+    margin-right: 0.75rem;
+    border: none;
+    line-height: 1;
+}
+
+.icon-button:last-child {
+    margin-right: 0;
+}
+
+.icon-button i {
+    font-size: 1rem;
+    pointer-events: none;
     transition: all 0.5s ease-out;
 }
-.action i:hover {
+
+.icon-button:hover i {
     transform: scale(1.2);
 }
 

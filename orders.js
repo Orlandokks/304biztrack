@@ -139,67 +139,126 @@ function newOrder(event) {
 
 
 function renderOrders(orders) {
-    const orderTableBody = document.getElementById("tableBody");
-    orderTableBody.innerHTML = "";
+  const orderTableBody = document.getElementById("tableBody");
 
-    const orderToRender = orders;
-    const statusMap = {
-        "Pending": "pending",
-        "Processing": "processing",
-        "Shipped": "shipped",
-        "Delivered": "delivered"
-    }
+  /*
+   * SECURITY FIX:
+   * The previous implementation rendered order rows through `innerHTML`.
+   * Several order fields are user-controlled, especially `orderID`, because
+   * it is entered through a free-text input. The old code also inserted
+   * `orderID` into inline onclick handlers, creating a dangerous JavaScript
+   * execution context.
+   *
+   * This implementation rebuilds rows with DOM APIs and inserts user data
+   * through textContent only.
+   */
+  BizTrackSafeDOM.clearElement(orderTableBody);
 
-    orderToRender.forEach(order => {
-      const orderRow = document.createElement("tr");
-      orderRow.className = "order-row";
+  /*
+   * Security rationale:
+   * CSS classes should not be built directly from arbitrary user-controlled
+   * data. Although the order status normally comes from a select element, data
+   * stored in localStorage can be manually modified. This whitelist maps known
+   * status labels to developer-controlled CSS class names.
+   */
+  const statusMap = {
+    Pending: "pending",
+    Processing: "processing",
+    Shipped: "shipped",
+    Delivered: "delivered",
+  };
 
-      orderRow.dataset.orderID = order.orderID;
-      orderRow.dataset.orderDate = order.orderDate;
-      orderRow.dataset.itemName = order.itemName;
-      orderRow.dataset.itemPrice = order.itemPrice;
-      orderRow.dataset.qtyBought = order.qtyBought;
-      orderRow.dataset.shipping = order.shipping;
-      orderRow.dataset.taxes = order.taxes;
-      orderRow.dataset.orderTotal = order.orderTotal;
-      orderRow.dataset.orderStatus = order.orderStatus;
+  orders.forEach((order) => {
+    const orderRow = document.createElement("tr");
+    orderRow.className = "order-row";
 
-      const formattedPrice = typeof order.itemPrice === 'number' ? `$${order.itemPrice.toFixed(2)}` : '';
-      const formattedShipping = typeof order.shipping === 'number' ? `$${order.shipping.toFixed(2)}` : '';
-      const formattedTaxes = typeof order.taxes === 'number' ? `$${order.taxes.toFixed(2)}` : '';
-      const formattedTotal = typeof order.orderTotal === 'number' ? `$${order.orderTotal.toFixed(2)}` : '';
+    orderRow.dataset.orderID = order.orderID;
+    orderRow.dataset.orderDate = order.orderDate;
+    orderRow.dataset.itemName = order.itemName;
+    orderRow.dataset.itemPrice = order.itemPrice;
+    orderRow.dataset.qtyBought = order.qtyBought;
+    orderRow.dataset.shipping = order.shipping;
+    orderRow.dataset.taxes = order.taxes;
+    orderRow.dataset.orderTotal = order.orderTotal;
+    orderRow.dataset.orderStatus = order.orderStatus;
 
-      orderRow.innerHTML = `
-        <td>${order.orderID}</td>
-        <td>${order.orderDate}</td>
-        <td>${order.itemName}</td>
-        <td>${formattedPrice}</td>
-        <td>${order.qtyBought}</td>
-        <td>${formattedShipping}</td>
-        <td>${formattedTaxes}</td>
-        <td class="order-total">${formattedTotal}</td>
-        <td>
-            <div class="status ${statusMap[order.orderStatus]}"><span>${order.orderStatus}</span></div>
-        </td>
-        <td class="action">
-            <i title="Edit" onclick="editRow('${order.orderID}')" class="edit-icon fa-solid fa-pen-to-square"></i>
-            <i onclick="deleteOrder('${order.orderID}')" class="delete-icon fas fa-trash-alt"></i>
-          </td> 
-      `;
-      orderTableBody.appendChild(orderRow);
+    BizTrackSafeDOM.appendTextCell(orderRow, order.orderID);
+    BizTrackSafeDOM.appendTextCell(orderRow, order.orderDate);
+    BizTrackSafeDOM.appendTextCell(orderRow, order.itemName);
+    BizTrackSafeDOM.appendTextCell(
+      orderRow,
+      BizTrackSafeDOM.formatCurrency(order.itemPrice)
+    );
+    BizTrackSafeDOM.appendTextCell(orderRow, order.qtyBought);
+    BizTrackSafeDOM.appendTextCell(
+      orderRow,
+      BizTrackSafeDOM.formatCurrency(order.shipping)
+    );
+    BizTrackSafeDOM.appendTextCell(
+      orderRow,
+      BizTrackSafeDOM.formatCurrency(order.taxes)
+    );
+    BizTrackSafeDOM.appendTextCell(
+      orderRow,
+      BizTrackSafeDOM.formatCurrency(order.orderTotal),
+      "order-total"
+    );
+
+    BizTrackSafeDOM.appendStatusCell(
+      orderRow,
+      order.orderStatus,
+      statusMap[order.orderStatus] || ""
+    );
+
+    /*
+     * SECURITY FIX:
+     * Inline onclick handlers have been replaced with event listeners.
+     * This prevents order IDs from being interpolated into executable
+     * JavaScript code.
+     */
+    const editButton = BizTrackSafeDOM.createIconButton({
+      label: `Edit order ${BizTrackSafeDOM.toDisplayText(order.orderID)}`,
+      title: "Edit",
+      iconClassName: "fa-solid fa-pen-to-square",
+      className: "icon-button edit-icon",
+      onClick: () => editRow(order.orderID),
+    });
+
+    const deleteButton = BizTrackSafeDOM.createIconButton({
+      label: `Delete order ${BizTrackSafeDOM.toDisplayText(order.orderID)}`,
+      title: "Delete",
+      iconClassName: "fas fa-trash-alt",
+      className: "icon-button delete-icon",
+      onClick: () => deleteOrder(order.orderID),
+    });
+
+    BizTrackSafeDOM.appendActionCell(orderRow, [editButton, deleteButton]);
+
+    orderTableBody.appendChild(orderRow);
   });
+
   displayRevenue();
 }
 
+
 function displayRevenue() {
-    const resultElement = document.getElementById("total-revenue");
+  const resultElement = document.getElementById("total-revenue");
 
-    const totalRevenue = orders
-        .reduce((total, order) => total + order.orderTotal, 0);
+  /*
+   * SECURITY FIX:
+   * Although totalRevenue is calculated numerically, this function now follows
+   * the same safe rendering convention as the table rows: DOM nodes are created
+   * explicitly and text is inserted through textContent.
+   */
+  const totalRevenue = orders.reduce(
+    (total, order) => total + Number(order.orderTotal || 0),
+    0
+  );
 
-    resultElement.innerHTML = `
-        <span>Total Revenue: $${totalRevenue.toFixed(2)}</span>
-    `;
+  BizTrackSafeDOM.setSingleTextSpan(
+    resultElement,
+    `Total Revenue: $${totalRevenue.toFixed(2)}`
+  );
 }
 
 function editRow(orderID) {

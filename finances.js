@@ -115,48 +115,91 @@ function newTransaction(event) {
 
 
 function renderTransactions(transactions) {
-    const transactionTableBody = document.getElementById("tableBody");
-    transactionTableBody.innerHTML = "";
+  const transactionTableBody = document.getElementById("tableBody");
 
-    const transactionToRender = transactions;
+  /*
+   * SECURITY FIX:
+   * The original transaction table was generated with `innerHTML`, and
+   * transaction notes are free-text user input. Rendering notes through
+   * innerHTML allows user-provided markup to be parsed as HTML.
+   *
+   * This implementation uses DOM API construction and textContent-based cells
+   * so that notes such as `<img src=x onerror=alert(1)>` are displayed as text
+   * rather than executed.
+   */
+  BizTrackSafeDOM.clearElement(transactionTableBody);
 
-    transactionToRender.forEach(transaction => {
-        const transactionRow = document.createElement("tr");
-        transactionRow.className = "transaction-row";
+  transactions.forEach((transaction) => {
+    const transactionRow = document.createElement("tr");
+    transactionRow.className = "transaction-row";
 
-        transactionRow.dataset.trID = transaction.trID;
-        transactionRow.dataset.trDate = transaction.trDate;
-        transactionRow.dataset.trCategory = transaction.trCategory;
-        transactionRow.dataset.trAmount = transaction.trAmount;
-        transactionRow.dataset.trNotes = transaction.trNotes;
+    transactionRow.dataset.trID = transaction.trID;
+    transactionRow.dataset.trDate = transaction.trDate;
+    transactionRow.dataset.trCategory = transaction.trCategory;
+    transactionRow.dataset.trAmount = transaction.trAmount;
+    transactionRow.dataset.trNotes = transaction.trNotes;
 
-        const formattedAmount = typeof transaction.trAmount === 'number' ? `$${transaction.trAmount.toFixed(2)}` : '';
+    BizTrackSafeDOM.appendTextCell(transactionRow, transaction.trID);
+    BizTrackSafeDOM.appendTextCell(transactionRow, transaction.trDate);
+    BizTrackSafeDOM.appendTextCell(transactionRow, transaction.trCategory);
+    BizTrackSafeDOM.appendTextCell(
+      transactionRow,
+      BizTrackSafeDOM.formatCurrency(transaction.trAmount),
+      "tr-amount"
+    );
+    BizTrackSafeDOM.appendTextCell(transactionRow, transaction.trNotes);
 
-        transactionRow.innerHTML = `
-            <td>${transaction.trID}</td>
-            <td>${transaction.trDate}</td>
-            <td>${transaction.trCategory}</td>
-            <td class="tr-amount">${formattedAmount}</td>
-            <td>${transaction.trNotes}</td>
-            <td class="action">
-                <i title="Edit" onclick="editRow('${transaction.trID}')" class="edit-icon fa-solid fa-pen-to-square"></i>
-                <i onclick="deleteTransaction('${transaction.trID}')" class="delete-icon fas fa-trash-alt"></i>
-            </td> 
-        `;
-        transactionTableBody.appendChild(transactionRow);
+    /*
+     * SECURITY FIX:
+     * The previous action icons used dynamically generated inline onclick
+     * handlers. Event listeners avoid embedding transaction IDs inside HTML
+     * or JavaScript strings.
+     */
+    const editButton = BizTrackSafeDOM.createIconButton({
+      label: `Edit expense ${BizTrackSafeDOM.toDisplayText(transaction.trID)}`,
+      title: "Edit",
+      iconClassName: "fa-solid fa-pen-to-square",
+      className: "icon-button edit-icon",
+      onClick: () => editRow(transaction.trID),
+    });
+
+    const deleteButton = BizTrackSafeDOM.createIconButton({
+      label: `Delete expense ${BizTrackSafeDOM.toDisplayText(transaction.trID)}`,
+      title: "Delete",
+      iconClassName: "fas fa-trash-alt",
+      className: "icon-button delete-icon",
+      onClick: () => deleteTransaction(transaction.trID),
+    });
+
+    BizTrackSafeDOM.appendActionCell(transactionRow, [
+      editButton,
+      deleteButton,
+    ]);
+
+    transactionTableBody.appendChild(transactionRow);
   });
+
   displayExpenses();
 }
 
+
 function displayExpenses() {
-    const resultElement = document.getElementById("total-expenses");
+  const resultElement = document.getElementById("total-expenses");
 
-    const totalExpenses = transactions
-        .reduce((total, transaction) => total + transaction.trAmount,0);
+  /*
+   * SECURITY FIX:
+   * Summary output is rendered using textContent-based DOM construction for
+   * consistency with the safer rendering model adopted across the CRUD pages.
+   */
+  const totalExpenses = transactions.reduce(
+    (total, transaction) => total + Number(transaction.trAmount || 0),
+    0
+  );
 
-    resultElement.innerHTML = `
-        <span>Total Expenses: $${totalExpenses.toFixed(2)}</span>
-    `;
+  BizTrackSafeDOM.setSingleTextSpan(
+    resultElement,
+    `Total Expenses: $${totalExpenses.toFixed(2)}`
+  );
 }
 
 function editRow(trID) {
