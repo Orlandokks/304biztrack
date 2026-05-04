@@ -19,7 +19,14 @@
                 <i class="fas fa-b"></i>
                 <span>BizTrack</span>
             </a>
-            <i class="fa-solid fa-xmark" title="Close" onclick="closeSidebar()"></i>
+            <button
+                type="button"
+                class="sidebar-close-button"
+                aria-label="Close navigation menu"
+                onclick="closeSidebar()"
+            >
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
         </div>
         <ul class="menu">
             <li>
@@ -63,9 +70,17 @@
 
     <div class="main-content">
         <div class="header-wrapper">
-            <div class="menu-icon" onclick="openSidebar()">
-                <i class="fa-solid fa-bars"></i>
-            </div>
+            <button
+                type="button"
+                class="menu-icon"
+                data-sidebar-toggle
+                aria-label="Open navigation menu"
+                aria-controls="sidebar"
+                aria-expanded="false"
+                onclick="openSidebar()"
+            >
+                <i class="fa-solid fa-bars" aria-hidden="true"></i>
+            </button>
             <div class="header-title">
                 <!-- <span>Primary</span> -->
                 <h2>Products</h2>
@@ -73,7 +88,7 @@
             <div class="user-info">
                 <div class="search-box">
                     <i class="fas fa-search"></i>
-                    <input type="search" id="searchInput" placeholder="Search">
+                    <input type="search" id="searchInput" aria-label="Search products" placeholder="Search">
                 </div>
                 <!-- <i class="fas fa-user-alt fa-xl"></i> -->
             </div>
@@ -157,13 +172,37 @@
                 <table id="product-table">
                     <thead>
                         <tr>
-                            <th onclick="sortTable('prodID')">Product ID</th>
-                            <th onclick="sortTable('prodName')">Product Name</th>
-                            <th onclick="sortTable('prodDesc')">Description</th>
-                            <th onclick="sortTable('prodCat')">Category</th>
-                            <th onclick="sortTable('prodPrice')">Price</th>
-                            <th onclick="sortTable('prodSold')">Units Sold</th>
-                            <th>Action</th>
+                            <th scope="col" data-sortable="true" aria-sort="none">
+                                <button type="button" class="sort-button" data-sort-column="prodID" aria-label="Sort by Product ID">
+                                    Product ID
+                                </button>
+                            </th>
+                            <th scope="col" data-sortable="true" aria-sort="none">
+                                <button type="button" class="sort-button" data-sort-column="prodName" aria-label="Sort by Product Name">
+                                    Product Name
+                                </button>
+                            </th>
+                            <th scope="col" data-sortable="true" aria-sort="none">
+                                <button type="button" class="sort-button" data-sort-column="prodDesc" aria-label="Sort by Description">
+                                    Description
+                                </button>
+                            </th>
+                            <th scope="col" data-sortable="true" aria-sort="none">
+                                <button type="button" class="sort-button" data-sort-column="prodCat" aria-label="Sort by Category">
+                                    Category
+                                </button>
+                            </th>
+                            <th scope="col" data-sortable="true" aria-sort="none">
+                                <button type="button" class="sort-button" data-sort-column="prodPrice" aria-label="Sort by Price">
+                                    Price
+                                </button>
+                            </th>
+                            <th scope="col" data-sortable="true" aria-sort="none">
+                                <button type="button" class="sort-button" data-sort-column="prodSold" aria-label="Sort by Units Sold">
+                                    Units Sold
+                                </button>
+                            </th>
+                            <th scope="col">Action</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody">
@@ -180,6 +219,7 @@
     </div>
 
     <script src="./safe-dom.js"></script>
+    <script src="./accessibility.js"></script>
     <script src="./products.js"></script>
 </body>
 </html>
