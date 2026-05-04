@@ -119,34 +119,74 @@ function newProduct(event) {
 
 function renderProducts(products) {
   const prodTableBody = document.getElementById("tableBody");
-  prodTableBody.innerHTML = "";
 
-  const prodToRender = products;
+  /*
+   * SECURITY FIX:
+   * The previous implementation used `prodTableBody.innerHTML = ""` and later
+   * assigned a template string to `prodRow.innerHTML`. Because product fields
+   * such as `prodID` and `prodDesc` originate from user input and localStorage,
+   * rendering them with `innerHTML` could allow DOM-based XSS.
+   *
+   * The table is now cleared and rebuilt using DOM APIs. User-controlled values
+   * are inserted only through `textContent` via BizTrackSafeDOM.appendTextCell().
+   */
+  BizTrackSafeDOM.clearElement(prodTableBody);
 
-  prodToRender.forEach(product => {
-      const prodRow = document.createElement("tr");
-      prodRow.className = "product-row";
+  products.forEach((product) => {
+    const prodRow = document.createElement("tr");
+    prodRow.className = "product-row";
 
-      prodRow.dataset.prodID = product.prodID;
-      prodRow.dataset.prodName = product.prodName;
-      prodRow.dataset.prodDesc = product.prodDesc;
-      prodRow.dataset.prodCat = product.prodCat;
-      prodRow.dataset.prodPrice = product.prodPrice;
-      prodRow.dataset.prodSold = product.prodSold;
+    /*
+     * Dataset values are used only for sorting/searching metadata. They are
+     * not interpreted as HTML. Visible table content is handled separately
+     * through textContent-based rendering.
+     */
+    prodRow.dataset.prodID = product.prodID;
+    prodRow.dataset.prodName = product.prodName;
+    prodRow.dataset.prodDesc = product.prodDesc;
+    prodRow.dataset.prodCat = product.prodCat;
+    prodRow.dataset.prodPrice = product.prodPrice;
+    prodRow.dataset.prodSold = product.prodSold;
 
-      prodRow.innerHTML = `
-          <td>${product.prodID}</td>
-          <td>${product.prodName}</td>
-          <td>${product.prodDesc}</td>
-          <td>${product.prodCat}</td>
-          <td>$${product.prodPrice.toFixed(2)}</td>
-          <td>${product.prodSold}</td>
-          <td class="action">
-            <i title="Edit" onclick="editRow('${product.prodID}')" class="edit-icon fa-solid fa-pen-to-square"></i>
-            <i onclick="deleteProduct('${product.prodID}')" class="delete-icon fas fa-trash-alt"></i>
-          </td>
-      `;
-      prodTableBody.appendChild(prodRow);
+    BizTrackSafeDOM.appendTextCell(prodRow, product.prodID);
+    BizTrackSafeDOM.appendTextCell(prodRow, product.prodName);
+    BizTrackSafeDOM.appendTextCell(prodRow, product.prodDesc);
+    BizTrackSafeDOM.appendTextCell(prodRow, product.prodCat);
+    BizTrackSafeDOM.appendTextCell(
+      prodRow,
+      BizTrackSafeDOM.formatCurrency(product.prodPrice)
+    );
+    BizTrackSafeDOM.appendTextCell(prodRow, product.prodSold);
+
+    /*
+     * SECURITY FIX:
+     * The original code embedded product IDs inside inline onclick handlers:
+     * onclick="editRow('${product.prodID}')".
+     *
+     * This is unsafe because a crafted ID containing quotes or JavaScript-like
+     * syntax could break the intended string context. The new implementation
+     * binds behavior through addEventListener(), so product IDs are passed as
+     * JavaScript values rather than interpolated into executable HTML.
+     */
+    const editButton = BizTrackSafeDOM.createIconButton({
+      label: `Edit product ${BizTrackSafeDOM.toDisplayText(product.prodID)}`,
+      title: "Edit",
+      iconClassName: "fa-solid fa-pen-to-square",
+      className: "icon-button edit-icon",
+      onClick: () => editRow(product.prodID),
+    });
+
+    const deleteButton = BizTrackSafeDOM.createIconButton({
+      label: `Delete product ${BizTrackSafeDOM.toDisplayText(product.prodID)}`,
+      title: "Delete",
+      iconClassName: "fas fa-trash-alt",
+      className: "icon-button delete-icon",
+      onClick: () => deleteProduct(product.prodID),
+    });
+
+    BizTrackSafeDOM.appendActionCell(prodRow, [editButton, deleteButton]);
+
+    prodTableBody.appendChild(prodRow);
   });
 }
 
