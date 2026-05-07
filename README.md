@@ -1,10 +1,14 @@
 # 📋 BizTrack Project
 
+![Istanbul coverage](deployment/evidence/coverage-badge.svg)
+
 BizTrack is a web app born from my experience running a small business. It’s a tool designed to simplify managing products, orders, and expenses seamlessly. As a small business owner, I created BizTrack to simplify the complexities of managing products, orders, and expenses. The inspiration for this project came from the challenges I faced in my own business. I wanted to develop a solution that could benefit “myself” and others in a similar situation.
 
 ## 📝 DEMO
 
-Please refer to --- https://sumusa.github.io/biztrack/.
+Production deployment: https://304biztrack.vercel.app/
+
+Coursework fork: https://github.com/Orlandokks/304biztrack
 
 ## 📷 Screenshots
 
@@ -19,6 +23,14 @@ Please refer to --- https://sumusa.github.io/biztrack/.
 - **Search and Sort Entries**: Sort through the product, order and expense tables using the column headers.
 - **Analytics**: Explore sales by product category and track expenses with visually appealing charts
 - **Export to CSV**: Download all data tables into CSV seamlessly.
+- **Internationalization**: Switch the interface between English and Chinese.
+- **Privacy Consent**: Review the privacy policy and save cookie/localStorage consent preferences.
+
+## ✅ Coursework Quality Evidence
+
+- Istanbul line coverage: 95.45% (`npm run coverage`).
+- Accessibility: Lighthouse Accessibility score is above 90 on the deployed core pages.
+- Deployment evidence, screenshots, and report-ready captions are kept in `deployment/`.
 
 ## 💪🏾 Motivation
 
