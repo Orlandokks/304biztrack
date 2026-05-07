@@ -47,7 +47,7 @@ deployment/evidence/coverage-badge.svg
 
 ![Figure 4. Lighthouse Accessibility report showing a score of 96.](evidence/lighthouse-accessibility.png)
 
-Caption: Figure 4. Lighthouse Accessibility report for the current BizTrack build, showing an Accessibility score of 96.
+Caption: Figure 4. Lighthouse Accessibility report for the production BizTrack URL, showing an Accessibility score of 96.
 
 Machine-readable Lighthouse output:
 
@@ -90,7 +90,11 @@ The deployed application was checked from the public Vercel URL. The main HTML p
 | https://304biztrack.vercel.app/products.html | 200 OK |
 | https://304biztrack.vercel.app/orders.html | 200 OK |
 | https://304biztrack.vercel.app/finances.html | 200 OK |
+| https://304biztrack.vercel.app/help.html | 200 OK |
+| https://304biztrack.vercel.app/privacy.html | 200 OK |
 | https://304biztrack.vercel.app/styles.css | 200 OK |
+| https://304biztrack.vercel.app/i18n.js | 200 OK |
+| https://304biztrack.vercel.app/privacy-consent.js | 200 OK |
 | https://304biztrack.vercel.app/products.js | 200 OK |
 
 Representative response headers observed during verification:

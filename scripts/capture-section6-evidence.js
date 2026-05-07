@@ -3,6 +3,7 @@ const { chromium } = require("playwright");
 
 const BASE_URL = process.env.BIZTRACK_BASE_URL || "http://127.0.0.1:4173";
 const EVIDENCE_DIR = path.join(process.cwd(), "deployment", "evidence");
+const SHOULD_CAPTURE_COVERAGE = process.env.CAPTURE_COVERAGE !== "0";
 
 async function saveScreenshot(page, filename, options = {}) {
   await page.screenshot({
@@ -93,11 +94,13 @@ async function withPage(browser, setup, callback) {
       }
     );
 
-    await withPage(browser, null, async (page) => {
-      await page.goto(`${BASE_URL}/coverage/index.html`, { waitUntil: "domcontentloaded" });
-      await page.waitForSelector(".coverage-summary", { timeout: 10000 });
-      await saveScreenshot(page, "coverage-report.png");
-    });
+    if (SHOULD_CAPTURE_COVERAGE) {
+      await withPage(browser, null, async (page) => {
+        await page.goto(`${BASE_URL}/coverage/index.html`, { waitUntil: "domcontentloaded" });
+        await page.waitForSelector(".coverage-summary", { timeout: 10000 });
+        await saveScreenshot(page, "coverage-report.png");
+      });
+    }
   } finally {
     await browser.close();
   }
