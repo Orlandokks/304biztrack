@@ -59,6 +59,27 @@ async function withPage(browser, setup, callback) {
       browser,
       async (context) => {
         await context.addInitScript(() => {
+          localStorage.setItem("bizTrackLanguage", "zh");
+          localStorage.setItem(
+            "bizTrackCookieConsent",
+            JSON.stringify({ decision: "accepted", savedAt: new Date().toISOString() })
+          );
+        });
+      },
+      async (page) => {
+        await page.goto(`${BASE_URL}/help.html`, { waitUntil: "domcontentloaded" });
+        await page.waitForSelector(".language-switcher", { timeout: 10000 });
+        await page.getByText("BizTrack 快速使用指南", { exact: true }).waitFor({
+          timeout: 10000,
+        });
+        await saveScreenshot(page, "i18n-chinese-help.png");
+      }
+    );
+
+    await withPage(
+      browser,
+      async (context) => {
+        await context.addInitScript(() => {
           localStorage.setItem(
             "bizTrackCookieConsent",
             JSON.stringify({ decision: "accepted", savedAt: new Date().toISOString() })

@@ -8,7 +8,7 @@ BizTrack is a web app born from my experience running a small business. It’s a
 
 Production deployment: https://304biztrack.vercel.app/
 
-Coursework fork: https://github.com/Orlandokks/304biztrack
+Coursework fork: https://github.com/MuggleZzzH/304biztrack
 
 ## 📷 Screenshots
 
@@ -28,7 +28,7 @@ Coursework fork: https://github.com/Orlandokks/304biztrack
 
 ## ✅ Coursework Quality Evidence
 
-- Istanbul line coverage: 95.45% (`npm run coverage`).
+- Istanbul line coverage: 95.8% (`npm run coverage`).
 - Accessibility: Lighthouse Accessibility score is above 90 on the deployed core pages.
 - Deployment evidence, screenshots, and report-ready captions are kept in `deployment/`.
 
