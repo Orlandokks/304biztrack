@@ -19,7 +19,14 @@
                 <i class="fas fa-b"></i>
                 <span>BizTrack</span>
             </a>
-            <i class="fa-solid fa-xmark" title="Close" onclick="closeSidebar()"></i>
+            <button
+                type="button"
+                class="sidebar-close-button"
+                aria-label="Close navigation menu"
+                onclick="closeSidebar()"
+            >
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
         </div>
         <ul class="menu">
             <li>
@@ -52,6 +59,12 @@
                     <span>Help</span>
                 </a>
             </li>
+            <li>
+                <a href="./privacy.html">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>Privacy Policy</span>
+                </a>
+            </li>
             <li class="logout">
                 <a href="./about.html">
                     <i class="fa-solid fa-users-line"></i>
@@ -63,9 +76,17 @@
 
     <div class="main-content">
         <div class="header-wrapper">
-            <div class="menu-icon" onclick="openSidebar()">
-                <i class="fa-solid fa-bars"></i>
-            </div>
+            <button
+                type="button"
+                class="menu-icon"
+                data-sidebar-toggle
+                aria-label="Open navigation menu"
+                aria-controls="sidebar"
+                aria-expanded="false"
+                onclick="openSidebar()"
+            >
+                <i class="fa-solid fa-bars" aria-hidden="true"></i>
+            </button>
             <div class="header-title">
                 <h2>Using BizTrack: A Quick Guide</h2>
             </div>
@@ -122,23 +143,40 @@
                 <p>Have questions, feedback, or just want to connect? Feel free to reach out!</p>
                 <ul class="contact-icon">
                     <li>
-                        <a href="https://www.linkedin.com/in/sumayyahmusa/" target=”_blank”
-                            <i class="fa-brands fa-linkedin"></i>
-                        </a> 
+                        <a
+                            href="https://www.linkedin.com/in/sumayyahmusa/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label="Open Sumayyah Musa's LinkedIn profile in a new tab"
+                        >
+                            <i class="fa-brands fa-linkedin" aria-hidden="true"></i>
+                        </a>
                     </li>
                     <li>
-                        <a href="https://github.com/sumusa/"target=”_blank”
-                            <i class="fa-brands fa-square-github"></i>
-                        </a> 
+                        <a
+                            href="https://github.com/sumusa/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label="Open Sumayyah Musa's GitHub profile in a new tab"
+                        >
+                            <i class="fa-brands fa-square-github" aria-hidden="true"></i>
+                        </a>
                     </li>
                     <li>
-                        <a href="mailto:info@summeesarts.com" target=”_blank”
-                            <i class="fa-solid fa-envelope"></i>
-                        </a> 
+                        <a
+                            href="mailto:info@summeesarts.com"
+                            aria-label="Send an email to Sumayyah Musa"
+                        >
+                            <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+                        </a>
                     </li>
                 </ul>
             </section>
         </div>
     </div>
+    <script src="./accessibility.js"></script>
+    <script src="./i18n.js"></script>
+    <script src="./privacy-consent.js"></script>
     <script src="./help.js"></script>
 </body>
+</html>

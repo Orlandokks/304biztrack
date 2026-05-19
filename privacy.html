@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="BizTrack Privacy Policy"/>
+    <meta property="og:description" content="Privacy policy for the BizTrack coursework deployment."/>
+    <link rel="stylesheet" href="./styles.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link rel="icon" type="image/x-icon" href="./assets/favicon.ico">
+    <title>Privacy Policy - BizTrack</title>
+</head>
+<body>
+    <div id="sidebar" class="sidebar">
+        <div class="logo">
+            <a href="./index.html">
+                <i class="fas fa-b"></i>
+                <span>BizTrack</span>
+            </a>
+            <button
+                type="button"
+                class="sidebar-close-button"
+                aria-label="Close navigation menu"
+                onclick="closeSidebar()"
+            >
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+        </div>
+        <ul class="menu">
+            <li>
+                <a href="./index.html">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="./products.html">
+                    <i class="fas fa-dolly"></i>
+                    <span>Products</span>
+                </a>
+            </li>
+            <li>
+                <a href="./orders.html">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Orders</span>
+                </a>
+            </li>
+            <li>
+                <a href="./finances.html">
+                    <i class="fas fa-sack-dollar"></i>
+                    <span>Expenses</span>
+                </a>
+            </li>
+            <li>
+                <a href="./help.html">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Help</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="./privacy.html">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>Privacy Policy</span>
+                </a>
+            </li>
+            <li class="logout">
+                <a href="./about.html">
+                    <i class="fa-solid fa-users-line"></i>
+                    <span>Meet the Developer</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="header-wrapper">
+            <button
+                type="button"
+                class="menu-icon"
+                data-sidebar-toggle
+                aria-label="Open navigation menu"
+                aria-controls="sidebar"
+                aria-expanded="false"
+                onclick="openSidebar()"
+            >
+                <i class="fa-solid fa-bars" aria-hidden="true"></i>
+            </button>
+            <div class="header-title">
+                <h2>Privacy Policy</h2>
+            </div>
+            <div class="user-info"></div>
+        </div>
+
+        <main class="privacy-container">
+            <section class="privacy-panel">
+                <h3 class="main-title">Privacy Policy</h3>
+                <p>This page explains what data BizTrack stores in the browser and how that data is used.</p>
+
+                <h4>Stored Data</h4>
+                <p>BizTrack stores products, orders, expenses, language preference, and cookie consent in localStorage on your device.</p>
+
+                <h4>Purpose</h4>
+                <p>The stored data keeps the dashboard, tables, CSV export, language toggle, and consent banner working between page visits.</p>
+
+                <h4>No Third-Party Sale</h4>
+                <p>The project does not sell personal data. It uses external CDNs only to load fonts, icons, and charts required by the interface.</p>
+
+                <h4>User Control</h4>
+                <p>You can clear the stored data at any time by clearing this site's browser storage.</p>
+
+                <p class="privacy-updated">Last updated: 7 May 2026</p>
+            </section>
+        </main>
+    </div>
+
+    <script src="./accessibility.js"></script>
+    <script src="./i18n.js"></script>
+    <script src="./privacy-consent.js"></script>
+</body>
+</html>

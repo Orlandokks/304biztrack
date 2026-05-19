@@ -1,0 +1,18 @@
+{
+  "name": "304biztrack",
+  "version": "1.0.0",
+  "private": true,
+  "description": "CPT304 coursework baseline evidence for the BizTrack static application.",
+  "scripts": {
+    "test": "vitest run",
+    "coverage": "vitest run --coverage",
+    "coverage:badge": "node scripts/generate-coverage-badge.js",
+    "evidence:screenshots": "node scripts/capture-section6-evidence.js"
+  },
+  "devDependencies": {
+    "@vitest/coverage-istanbul": "^3.2.4",
+    "jsdom": "^26.1.0",
+    "playwright": "^1.59.1",
+    "vitest": "^3.2.4"
+  }
+}

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="158" height="28" role="img" aria-label="Istanbul coverage: 95.8%">
+  <title>Istanbul coverage: 95.8%</title>
+  <linearGradient id="s" x2="0" y2="100%">
+    <stop offset="0" stop-color="#bbb" stop-opacity=".1"/>
+    <stop offset="1" stop-opacity=".1"/>
+  </linearGradient>
+  <clipPath id="r"><rect width="158" height="28" rx="4" fill="#fff"/></clipPath>
+  <g clip-path="url(#r)">
+    <rect width="108" height="28" fill="#555"/>
+    <rect x="108" width="50" height="28" fill="#249672"/>
+    <rect width="158" height="28" fill="url(#s)"/>
+  </g>
+  <g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,sans-serif" text-rendering="geometricPrecision" font-size="11">
+    <text x="54" y="18" fill="#010101" fill-opacity=".3">Istanbul coverage</text>
+    <text x="54" y="17">Istanbul coverage</text>
+    <text x="132" y="18" fill="#010101" fill-opacity=".3">95.8%</text>
+    <text x="132" y="17">95.8%</text>
+  </g>
+</svg>
